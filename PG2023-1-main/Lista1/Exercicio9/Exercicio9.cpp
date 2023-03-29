@@ -88,6 +88,8 @@ int main()
 
         glBindVertexArray(VAO);
 
+        // Inicio do exercio
+
         // Contorno teto
         glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
         glDrawArrays(GL_LINE_LOOP, 0, 3);
@@ -124,6 +126,9 @@ int main()
 
         glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
         glDrawArrays(GL_LINE_LOOP, 23, 4);
+
+
+        // Fim do exercio
 
         glBindVertexArray(0);
 
