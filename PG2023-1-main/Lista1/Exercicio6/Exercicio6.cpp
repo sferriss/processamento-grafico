@@ -24,10 +24,10 @@ int setupGeometry();
 const GLuint WIDTH = 800, HEIGHT = 600;
 
 // Número de vértices que terá em volta do ponto central + 1 + o ponto central
-const int nPoints = 1000 + 1 + 1; //Circulo
+//const int nPoints = 1000 + 1 + 1; //Circulo
 //const int nPoints = 8 + 1 + 1; // Octagono
 //const int nPoints = 5 + 1 + 1; // Pentagono
-//const int nPoints = 10 + 1 + 1; // Estrela
+const int nPoints = 10 + 1 + 1; // Estrela
 const float pi = 3.14159;
 
 
@@ -88,20 +88,13 @@ int main()
 		glfwPollEvents();
 
 		// Limpa o buffer de cor
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
+		glClearColor(0.8f, 0.8f, 0.8f, 1.0f); //cor de fundo
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glLineWidth(10);
 		glPointSize(20);
 
 		glBindVertexArray(VAO); //Conectando ao buffer de geometria
-
-		// Chamada de desenho - drawcall
-		// Poligono Preenchido - GL_TRIANGLES
-
-		// Chamada de desenho - drawcall
-		// CONTORNO - GL_LINE_LOOP
-		// PONTOS - GL_POINTS
 
 		// INICIO EXERCICIO
 		
@@ -110,10 +103,10 @@ int main()
 		// a) Desenhe um octágono
 		// b) Desenhe um pentágono
 		// e) DESAFIO: desenhe uma “estrela”
-		//glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints);
+		glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints);
 
 		// c) Desenhe um pac-man!
-		glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints * 7 / 8);
+		//glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints * 7 / 8);
 
 		// d) Desenhe uma fatia de pizza
 		//glDrawArrays(GL_TRIANGLE_FAN, 0, nPoints / 8);
@@ -165,10 +158,10 @@ int setupGeometry()
 	for (int i = 3; i < nPoints * 3; i += 3)
 	{
 		// e) DESAFIO: desenhe uma “estrela”
-		/*if(i % 2 == 0)
+		if(i % 2 == 0)
 			radius = 0.2;
 		else
-			radius = 0.5;*/
+			radius = 0.5;
 
 		vertices[i] = radius * cos(angle);
 		vertices[i+1] = radius * sin(angle);
