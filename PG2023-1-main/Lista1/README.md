@@ -43,3 +43,7 @@ d) Desenhe uma fatia de pizza
 e) DESAFIO: desenhe uma “estrela”
 
 <img src="./Exercicio6/prints/6e.PNG" width="1000">
+
+<b>7. Desenhe uma espiral, assim:</b>
+
+<img src="./Exercicio7/prints/7.PNG" width="1000">
