@@ -117,15 +117,19 @@ int main()
         // Janela divida em 4 quadrados
         glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
         glDrawArrays(GL_LINE_LOOP, 11, 4);
-
+        
         glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
         glDrawArrays(GL_LINE_LOOP, 15, 4);
 
         glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
         glDrawArrays(GL_LINE_LOOP, 19, 4);
-
+        
         glUniform4f(colorLoc, 0.0f, 0.0f, 0.0f, 1.0f);
         glDrawArrays(GL_LINE_LOOP, 23, 4);
+
+        //chao
+        glUniform4f(colorLoc, 0.6f, 0.0f, 0.0f, 1.0f);
+        glDrawArrays(GL_LINE_LOOP, 27, 2);
 
 
         // Fim do exercio
@@ -196,6 +200,10 @@ int setupGeometry()
         -0.25f, 0.15f, 0.0f, // canto inferior direito
         -0.25f, 0.3f, 0.0f, // canto superior direito
         -0.4f, 0.3f, 0.0f, // canto superior esquerdo
+
+        //chao
+        -1.0f, -0.5f, 0.0f, // canto inferior esquerdo
+        1.0f, -0.5f, 0.0f, // canto inferior direito
     };
 
     GLuint VBO, VAO;
