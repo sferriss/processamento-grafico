@@ -6,16 +6,16 @@
 
 a. Apenas com o polígono preenchido
 
-<img src="./Exercicio5/prints/5a.png" width="1000">
+<img src="./Exercicio5/prints/5a.PNG" width="1000">
 
 b. Apenas com contorno
 
-<img src="./Exercicio5/prints/5b.png" width="1000">
+<img src="./Exercicio5/prints/5b.PNG" width="1000">
 
 c. Apenas como pontos
 
-<img src="./Exercicio5/prints/5c.png" width="1000">
+<img src="./Exercicio5/prints/5c.PNG" width="1000">
 
 d. Com as 3 formas de desenho juntas
 
-<img src="./Exercicio5/prints/5d.png" width="1000">
+<img src="./Exercicio5/prints/5d.PNG" width="1000">
