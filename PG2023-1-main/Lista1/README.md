@@ -47,3 +47,13 @@ e) DESAFIO: desenhe uma “estrela”
 <b>7. Desenhe uma espiral, assim:</b>
 
 <img src="./Exercicio7/prints/7.PNG" width="1000">
+
+<b>8. Considerando o seguinte triângulo abaixo, formado pelos vértices P1, P2 e P3, respectivamente com as cores vermelho, verde e azul.</b>
+
+a. Descreva uma possível configuração dos buffers (VBO, VAO e EBO) para representá-lo.
+
+b. Como estes atributos seriam identificados no vertex shader?
+
+Agora implemente!
+
+<img src="./Exercicio8/prints/8.PNG" width="1000">

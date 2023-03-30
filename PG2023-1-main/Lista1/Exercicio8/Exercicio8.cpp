@@ -81,7 +81,7 @@ int main()
 		glfwPollEvents();
 
 		// Limpa o buffer de cor
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
+		glClearColor(0.8f, 0.8f, 0.8f, 1.0f); //cor de fundo
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glLineWidth(10);
@@ -103,8 +103,6 @@ int main()
 
 		glUniform4f(colorLoc, 0.25f, 0.41f, 0.88f, 1.0f);
 		glDrawArrays(GL_LINE_LOOP, 0, 3);
-
-		// FIM EXERCICIO
 		
 
 		glBindVertexArray(0); //Desconectando o buffer de geometria
