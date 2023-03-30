@@ -60,4 +60,4 @@ Agora implemente!
 
 <b>9. Faça um desenho em um papel quadriculado (pode ser no computador mesmo) e reproduza-o utilizando primitivas em OpenGL. Neste exercício você poderá criar mais de um VAO e fazer mais de uma chamada de desenho para poder utilizar primitivas diferentes, se necessário.</b>
 
-<img src="./Exercicio9/prints/9.png" width="1000">
+<img src="./Exercicio9/prints/9.PNG" width="1000">
