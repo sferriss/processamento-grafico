@@ -118,23 +118,15 @@
   <ItemGroup>
     <ClCompile Include="../../commonfiles/glad.c" />
     <ClCompile Include="../../commonfiles/Shader.cpp" />
-    <ClCompile Include="Exercicio1.cpp" />
+    <ClCompile Include="Exercicio3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="../../commonfiles/Shader.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="../../commonfiles/shaders/HelloTriangle.fs" />
-    <None Include="../../commonfiles/shaders/HelloTriangle.vs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\..\commonFiles\shaders\Ortho.vs" />
     <Content Include="..\..\commonFiles\shaders\Transaction.vs" />
-    <Content Include="..\..\commonFiles\shaders\vertex.vs" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\commonFiles\shaders\fragment.fs" />
-    <Compile Include="..\..\commonFiles\shaders\Ortho.fs" />
     <Compile Include="..\..\commonFiles\shaders\Transaction.fs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,4 @@
-//Código fonte do Fragment Shader (em GLSL)
+//CÃ³digo fonte do Fragment Shader (em GLSL)
 #version 400
 out vec4 color;
 in vec4 finalColor;

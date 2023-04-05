@@ -61,7 +61,7 @@ int main()
 	
 
 	// Compilando e buildando o programa de shader
-	Shader shader("Transaction.vs", "Transaction.fs");
+	Shader shader("../../commonFiles/shaders/Transaction.vs", "../../commonFiles/shaders/Transaction.fs");
 
 	// Gerando um buffer simples, com a geometria de um triângulo
 	GLuint VAO = setupGeometry();
