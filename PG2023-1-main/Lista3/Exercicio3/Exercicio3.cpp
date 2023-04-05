@@ -100,7 +100,7 @@ int main()
         
         auto model = glm::mat4(1); //matriz identidade
 
-        float movement_speed = 0.9f;
+        float movement_speed = 0.2f;
 
         switch(mov) {
         case Left:
