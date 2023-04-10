@@ -98,7 +98,7 @@ int main()
 		for(int i=1; i<4; i++) {
 			auto model = glm::mat4(1); //matriz identidade
 			model = glm::translate(model, glm::vec3(i*200.0, i*150.0, 0));
-			model = glm::rotate(model, glm::radians(360.f / i * (float) glfwGetTime()), glm::vec3(0,0,1));
+			model = glm::rotate(model, (float) glfwGetTime() / i * 5.0f, glm::vec3(0,0,1));
 			model = glm::scale(model, glm::vec3(i*50.0, i*50.0, 1.0));
 			
 			GLint modelLoc = glGetUniformLocation(shader.ID, "model");
