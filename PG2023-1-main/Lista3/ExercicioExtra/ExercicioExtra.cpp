@@ -37,8 +37,6 @@ int setupGeometry();
 
 // Dimensões da janela (pode ser alterado em tempo de execução)
 const GLuint WIDTH = 800, HEIGHT = 600;
-enum movement { Left, Right, Top, Down, Stop};
-static movement mov = Stop;
 const float radius = 50;
 
 // Função MAIN
@@ -48,7 +46,7 @@ int main()
     glfwInit();
 
     // Criação da janela GLFW
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Lista3 - Exercicio3", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Lista3 - ExercicioExtra", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     // Fazendo o registro da função de callback para a janela GLFW
@@ -77,6 +75,8 @@ int main()
 
     float x = 400;
     float y = 300;
+    float xMov = -0.02;
+    float yMov = -0.02;
 
     // Loop da aplicação - "game loop"
     while (!glfwWindowShouldClose(window))
@@ -100,28 +100,16 @@ int main()
         
         auto model = glm::mat4(1); //matriz identidade
 
-        float movement_speed = 0.2f;
-
-        switch(mov) {
-        case Left:
-            if(x>radius)
-                x -= movement_speed;
-            break;
-        case Right:
-            if(x<width-radius)
-                x += movement_speed;
-            break;
-        case Top:
-            if(y<height-radius)
-                y += movement_speed;
-            break;
-        case Down:
-            if(y>radius)
-                y -= movement_speed;
-            break;
-        default:
-            break;
+        if(x < radius || x > width - radius) {	
+            xMov = -xMov;
         }
+
+        if(y < radius || y > height - radius) {	
+            yMov = -yMov;
+        }
+
+        x += xMov;
+        y += yMov;
         
         model = translate(model, glm::vec3(x, y, 0));
         model = scale(model, glm::vec3(100.0, 100.0, 1.0));
@@ -150,18 +138,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
-
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
-        mov = Right;
-    }	else if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) {
-        mov = Left;
-    }	else if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) {
-        mov = Top;
-    }	else if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) {
-        mov = Down;
-    }	else {
-        mov = Stop;
-    }
 }
 
 // Esta função está bastante harcoded - objetivo é criar os buffers que armazenam a 
