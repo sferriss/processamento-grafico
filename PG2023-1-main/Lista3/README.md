@@ -1,4 +1,4 @@
-# Introdução à OpenGL Moderna – Sistemas de Coordenadas e Câmera 2D
+# Introdução à OpenGL Moderna –Transformações em Objetos
 
 <b> 1. Desenhe uma mesma geometria 3 vezes na tela, aplicando transformações diferentes (mesmo VAO, matrizes de transformações diferentes, 3 chamadas de desenho).<b><br>
 
