@@ -75,8 +75,8 @@ int main()
 
     float x = 400;
     float y = 300;
-    float xMov = -0.02;
-    float yMov = -0.02;
+    float xMov = -0.1;
+    float yMov = -0.1;
 
     // Loop da aplicação - "game loop"
     while (!glfwWindowShouldClose(window))

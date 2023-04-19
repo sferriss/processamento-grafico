@@ -40,7 +40,7 @@ int main()
     glfwInit();
 
     // Criação da janela GLFW
-    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Exercicio2", nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "Lista3 - Exercicio2", nullptr, nullptr);
     glfwMakeContextCurrent(window);
 
     // Fazendo o registro da função de callback para a janela GLFW
@@ -110,8 +110,7 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texID);
 
         glDrawArrays(GL_TRIANGLES, 0, 6);
-
-
+        
         glBindVertexArray(0); //Desconectando o buffer de geometria
 
         // Troca os buffers da tela
