@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{F5AAA052-0B98-4C11-99FF-B1DC918713BF}</ProjectGuid>
+    <RootNamespace>HelloTriangleOrtho</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <AdditionalIncludeDirectories>../../dependencies/stb_image;../../dependencies/glfw-3.3.4.bin.WIN32/include;../../dependencies/glm;../../dependencies/GLAD/include</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>../../dependencies/glfw-3.3.4.bin.WIN32/lib-vc2019</AdditionalLibraryDirectories>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\dependencies\stb_image\stb_image.cpp" />
+    <ClCompile Include="../../commonfiles/glad.c" />
+    <ClCompile Include="../../commonfiles/Shader.cpp" />
+    <ClCompile Include="Game.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\dependencies\stb_image\stb_image.h" />
+    <ClInclude Include="../../commonfiles/Shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Shaders\Game.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Shaders\Game.vs" />
+    <Content Include="Textures\Background\city.png" />
+    <Content Include="Textures\Cars\1.png" />
+    <Content Include="Textures\Cars\10.png" />
+    <Content Include="Textures\Cars\100.png" />
+    <Content Include="Textures\Cars\101.png" />
+    <Content Include="Textures\Cars\102.png" />
+    <Content Include="Textures\Cars\103.png" />
+    <Content Include="Textures\Cars\104.png" />
+    <Content Include="Textures\Cars\105.png" />
+    <Content Include="Textures\Cars\106.png" />
+    <Content Include="Textures\Cars\107.png" />
+    <Content Include="Textures\Cars\108.png" />
+    <Content Include="Textures\Cars\109.png" />
+    <Content Include="Textures\Cars\11.png" />
+    <Content Include="Textures\Cars\110.png" />
+    <Content Include="Textures\Cars\111.png" />
+    <Content Include="Textures\Cars\112.png" />
+    <Content Include="Textures\Cars\113.png" />
+    <Content Include="Textures\Cars\114.png" />
+    <Content Include="Textures\Cars\115.png" />
+    <Content Include="Textures\Cars\116.png" />
+    <Content Include="Textures\Cars\117.png" />
+    <Content Include="Textures\Cars\118.png" />
+    <Content Include="Textures\Cars\119.png" />
+    <Content Include="Textures\Cars\12.png" />
+    <Content Include="Textures\Cars\120.png" />
+    <Content Include="Textures\Cars\121.png" />
+    <Content Include="Textures\Cars\122.png" />
+    <Content Include="Textures\Cars\123.png" />
+    <Content Include="Textures\Cars\124.png" />
+    <Content Include="Textures\Cars\125.png" />
+    <Content Include="Textures\Cars\126.png" />
+    <Content Include="Textures\Cars\127.png" />
+    <Content Include="Textures\Cars\128.png" />
+    <Content Include="Textures\Cars\129.png" />
+    <Content Include="Textures\Cars\13.png" />
+    <Content Include="Textures\Cars\130.png" />
+    <Content Include="Textures\Cars\131.png" />
+    <Content Include="Textures\Cars\132.png" />
+    <Content Include="Textures\Cars\133.png" />
+    <Content Include="Textures\Cars\134.png" />
+    <Content Include="Textures\Cars\135.png" />
+    <Content Include="Textures\Cars\136.png" />
+    <Content Include="Textures\Cars\137.png" />
+    <Content Include="Textures\Cars\138.png" />
+    <Content Include="Textures\Cars\139.png" />
+    <Content Include="Textures\Cars\14.png" />
+    <Content Include="Textures\Cars\140.png" />
+    <Content Include="Textures\Cars\141.png" />
+    <Content Include="Textures\Cars\142.png" />
+    <Content Include="Textures\Cars\143.png" />
+    <Content Include="Textures\Cars\144.png" />
+    <Content Include="Textures\Cars\145.png" />
+    <Content Include="Textures\Cars\146.png" />
+    <Content Include="Textures\Cars\147.png" />
+    <Content Include="Textures\Cars\148.png" />
+    <Content Include="Textures\Cars\149.png" />
+    <Content Include="Textures\Cars\15.png" />
+    <Content Include="Textures\Cars\150.png" />
+    <Content Include="Textures\Cars\151.png" />
+    <Content Include="Textures\Cars\152.png" />
+    <Content Include="Textures\Cars\153.png" />
+    <Content Include="Textures\Cars\154.png" />
+    <Content Include="Textures\Cars\155.png" />
+    <Content Include="Textures\Cars\156.png" />
+    <Content Include="Textures\Cars\157.png" />
+    <Content Include="Textures\Cars\158.png" />
+    <Content Include="Textures\Cars\159.png" />
+    <Content Include="Textures\Cars\16.png" />
+    <Content Include="Textures\Cars\160.png" />
+    <Content Include="Textures\Cars\161.png" />
+    <Content Include="Textures\Cars\162.png" />
+    <Content Include="Textures\Cars\163.png" />
+    <Content Include="Textures\Cars\164.png" />
+    <Content Include="Textures\Cars\165.png" />
+    <Content Include="Textures\Cars\166.png" />
+    <Content Include="Textures\Cars\167.png" />
+    <Content Include="Textures\Cars\168.png" />
+    <Content Include="Textures\Cars\169.png" />
+    <Content Include="Textures\Cars\17.png" />
+    <Content Include="Textures\Cars\170.png" />
+    <Content Include="Textures\Cars\171.png" />
+    <Content Include="Textures\Cars\172.png" />
+    <Content Include="Textures\Cars\173.png" />
+    <Content Include="Textures\Cars\174.PNG" />
+    <Content Include="Textures\Cars\175.png" />
+    <Content Include="Textures\Cars\176.png" />
+    <Content Include="Textures\Cars\177.png" />
+    <Content Include="Textures\Cars\178.png" />
+    <Content Include="Textures\Cars\179.png" />
+    <Content Include="Textures\Cars\18.png" />
+    <Content Include="Textures\Cars\180.png" />
+    <Content Include="Textures\Cars\181.png" />
+    <Content Include="Textures\Cars\182.png" />
+    <Content Include="Textures\Cars\183.png" />
+    <Content Include="Textures\Cars\184.png" />
+    <Content Include="Textures\Cars\185.png" />
+    <Content Include="Textures\Cars\186.png" />
+    <Content Include="Textures\Cars\187.png" />
+    <Content Include="Textures\Cars\188.png" />
+    <Content Include="Textures\Cars\189.png" />
+    <Content Include="Textures\Cars\19.png" />
+    <Content Include="Textures\Cars\190.png" />
+    <Content Include="Textures\Cars\191.png" />
+    <Content Include="Textures\Cars\192.png" />
+    <Content Include="Textures\Cars\193.png" />
+    <Content Include="Textures\Cars\194.png" />
+    <Content Include="Textures\Cars\2.png" />
+    <Content Include="Textures\Cars\20.png" />
+    <Content Include="Textures\Cars\21.png" />
+    <Content Include="Textures\Cars\22.png" />
+    <Content Include="Textures\Cars\23.png" />
+    <Content Include="Textures\Cars\24.png" />
+    <Content Include="Textures\Cars\25.png" />
+    <Content Include="Textures\Cars\26.png" />
+    <Content Include="Textures\Cars\27.png" />
+    <Content Include="Textures\Cars\28.png" />
+    <Content Include="Textures\Cars\29.png" />
+    <Content Include="Textures\Cars\3.png" />
+    <Content Include="Textures\Cars\30.png" />
+    <Content Include="Textures\Cars\31.png" />
+    <Content Include="Textures\Cars\32.png" />
+    <Content Include="Textures\Cars\33.png" />
+    <Content Include="Textures\Cars\34.png" />
+    <Content Include="Textures\Cars\35.png" />
+    <Content Include="Textures\Cars\36.png" />
+    <Content Include="Textures\Cars\37.png" />
+    <Content Include="Textures\Cars\38.png" />
+    <Content Include="Textures\Cars\39.png" />
+    <Content Include="Textures\Cars\4.png" />
+    <Content Include="Textures\Cars\40.png" />
+    <Content Include="Textures\Cars\41.png" />
+    <Content Include="Textures\Cars\42.png" />
+    <Content Include="Textures\Cars\43.png" />
+    <Content Include="Textures\Cars\44.png" />
+    <Content Include="Textures\Cars\45.png" />
+    <Content Include="Textures\Cars\46.png" />
+    <Content Include="Textures\Cars\47.png" />
+    <Content Include="Textures\Cars\48.png" />
+    <Content Include="Textures\Cars\49.png" />
+    <Content Include="Textures\Cars\5.png" />
+    <Content Include="Textures\Cars\50.png" />
+    <Content Include="Textures\Cars\51.png" />
+    <Content Include="Textures\Cars\52.png" />
+    <Content Include="Textures\Cars\53.png" />
+    <Content Include="Textures\Cars\54.png" />
+    <Content Include="Textures\Cars\55.png" />
+    <Content Include="Textures\Cars\56.png" />
+    <Content Include="Textures\Cars\57.png" />
+    <Content Include="Textures\Cars\58.png" />
+    <Content Include="Textures\Cars\59.png" />
+    <Content Include="Textures\Cars\6.png" />
+    <Content Include="Textures\Cars\60.png" />
+    <Content Include="Textures\Cars\61.png" />
+    <Content Include="Textures\Cars\62.png" />
+    <Content Include="Textures\Cars\63.png" />
+    <Content Include="Textures\Cars\64.png" />
+    <Content Include="Textures\Cars\65.png" />
+    <Content Include="Textures\Cars\66.png" />
+    <Content Include="Textures\Cars\67.png" />
+    <Content Include="Textures\Cars\68.png" />
+    <Content Include="Textures\Cars\69.png" />
+    <Content Include="Textures\Cars\7.png" />
+    <Content Include="Textures\Cars\70.png" />
+    <Content Include="Textures\Cars\71.png" />
+    <Content Include="Textures\Cars\72.png" />
+    <Content Include="Textures\Cars\73.png" />
+    <Content Include="Textures\Cars\74.png" />
+    <Content Include="Textures\Cars\75.png" />
+    <Content Include="Textures\Cars\76.png" />
+    <Content Include="Textures\Cars\77.png" />
+    <Content Include="Textures\Cars\78.png" />
+    <Content Include="Textures\Cars\79.png" />
+    <Content Include="Textures\Cars\8.png" />
+    <Content Include="Textures\Cars\80.png" />
+    <Content Include="Textures\Cars\81.png" />
+    <Content Include="Textures\Cars\82.png" />
+    <Content Include="Textures\Cars\83.png" />
+    <Content Include="Textures\Cars\84.png" />
+    <Content Include="Textures\Cars\85.png" />
+    <Content Include="Textures\Cars\86.png" />
+    <Content Include="Textures\Cars\87.png" />
+    <Content Include="Textures\Cars\88.png" />
+    <Content Include="Textures\Cars\89.png" />
+    <Content Include="Textures\Cars\9.png" />
+    <Content Include="Textures\Cars\90.png" />
+    <Content Include="Textures\Cars\91.png" />
+    <Content Include="Textures\Cars\92.png" />
+    <Content Include="Textures\Cars\93.png" />
+    <Content Include="Textures\Cars\94.png" />
+    <Content Include="Textures\Cars\95.png" />
+    <Content Include="Textures\Cars\96.png" />
+    <Content Include="Textures\Cars\97.png" />
+    <Content Include="Textures\Cars\98.png" />
+    <Content Include="Textures\Cars\99.png" />
+    <Content Include="Textures\Characters\rogue.png" />
+    <Content Include="Textures\Characters\walk1.png" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
