@@ -1,284 +1,301 @@
-#include <iostream>
-#include <string>
-#include <assert.h>
+#include "Interfaces/Game.h"
 
-using namespace std;
+#include "stb_image.h"
 
-// GLAD
-#include <glad/glad.h>
+static constexpr float width_default = 1300.0f, height_default = 900.0f, height_car = 90.0f, width_car = 45.0f;
+static float width = width_default, height = height_default;
+static bool resized, left_pressed, right_pressed, up_pressed, down_pressed, started, game_over, ready_to_start = true;
 
-// GLFW
-#include <GLFW/glfw3.h>
+Game::Game() = default;
 
-//GLM
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+Game::~Game() = default;
 
-//STB IMAGE
-#include "../../dependencies/stb_image/stb_image.h"
+void Game::start()
+{
+    initialize_graphics();
+}
 
-//Classe shader
-#include "../../commonFiles/Shader.h"
-
-
-// Protótipos das funções
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
-//int setup_geometry();
-int setup_sprite();
-GLuint generate_texture(string file_path, int& width, int& height);
-void configure_drawing(Shader shader, int width, int height, GLuint tex_id, glm::mat4& model, GLint& model_loc,
-                       glm::vec3 char_pos);
-
-// Dimensões da janela (pode ser alterado em tempo de execução)
-const GLuint width = 1000, height = 800;
-const float radius = 35;
-
-glm::vec3 char_pos;
-
-int main()
+void Game::initialize_graphics()
 {
     glfwInit();
 
-    GLFWwindow* window = glfwCreateWindow(width, height, "Game", nullptr, nullptr);
-    glfwMakeContextCurrent(window);
+    window_ = glfwCreateWindow(width, height, "Trabalho GA - Sandro Ferri", nullptr, nullptr);
+    glfwMakeContextCurrent(window_);
+    glfwSetKeyCallback(window_, key_callback);
+    glfwSetWindowSizeCallback(window_, resize);
 
-    // Fazendo o registro da função de callback para a janela GLFW
-    glfwSetKeyCallback(window, key_callback);
-
-    // GLAD: carrega todos os ponteiros d funções da OpenGL
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    if (!gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
     }
 
-    // Compilando e buildando o programa de shader
-    Shader shader("./Shaders/Game.vs", "./Shaders/Game.fs");
+    const GLubyte* renderer = glGetString(GL_RENDERER);
+    const GLubyte* version = glGetString(GL_VERSION);
+    cout << "Renderer: " << renderer << endl;
+    cout << "OpenGL version supported " << version << endl;
 
-    int bgwidth, bgheight;
-    int charwidth, charheight;
-    char_pos.x = 100;
-    char_pos.y = 110;
-    char_pos.z = 0;
+    add_shader("Shaders/sprite.vs", "Shaders/sprite.fs");
 
-    GLuint texID = generate_texture("./Textures/Background/city.png", bgwidth, bgheight);
-    GLuint texID2 = generate_texture("./Textures/Cars/132.png", charwidth, charheight);
-
-    GLuint VAO_background = setup_sprite();
-    GLuint VAO_character = setup_sprite();
-
-    glUseProgram(shader.ID);
-
-    glm::mat4 projection = glm::ortho(0.0, 800.0, 0.0, 600.0, -1.0, 1.0);
-
-    GLint projLoc = glGetUniformLocation(shader.ID, "projection");
-    glUniformMatrix4fv(projLoc, 1, FALSE, glm::value_ptr(projection));
-
-    //Ativar o buffer de textura
-    glActiveTexture(GL_TEXTURE0);
-
-    //Habilitar teste de profundidade
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_ALWAYS);
-
-    //Habilitar a transparência
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    // Loop da aplicação - "game loop"
-    while (!glfwWindowShouldClose(window))
-    {
-        // Checa se houveram eventos de input (key pressed, mouse moved etc.) e chama as funções de callback correspondentes
-        glfwPollEvents();
-
-        // Definindo as dimensões da viewport com as mesmas dimensões da janela da aplicação
-        int width, height;
-        glfwGetFramebufferSize(window, &width, &height);
-        glViewport(0, 0, width, height);
-
-        // Limpa o buffer de cor
-        glClearColor(0.0f, 0.0f, 0.0f, 1.0f); //cor de fundo
-        glClear(GL_COLOR_BUFFER_BIT);
-
-        glLineWidth(1);
-        glPointSize(5);
-
-        glBindVertexArray(VAO_background); //Conectando ao buffer de geometria
-
-        //Matriz de modelo para desenho do background
-        glm::mat4 model;
-        GLint modelLoc;
-        configure_drawing(shader, bgwidth * 0.6, bgheight * 0.6, texID, model, modelLoc, glm::vec3(400.0, 300.0, 0.0));
-
-
-        configure_drawing(shader, 75, 37.5, texID2, model, modelLoc, char_pos);
-
-        glBindVertexArray(0); //Desconectando o buffer de geometria
-
-        // Troca os buffers da tela
-        glfwSwapBuffers(window);
-    }
-    // Pede pra OpenGL desalocar os buffers
-    glDeleteVertexArrays(1, &VAO_background);
-    // Finaliza a execução da GLFW, limpando os recursos alocados por ela
-    glfwTerminate();
-    return 0;
+    resized = true;
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode)
+void Game::add_shader(const string& v_filename, const string& f_filename)
+{
+    shader_ = new Shader(v_filename.c_str(), f_filename.c_str());
+}
+
+void Game::key_callback(GLFWwindow* window, const int key, int scancode, const int action, int mode)
 {
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 
-    //if (char_pos.x < radius || char_pos.x > width - radius || char_pos.y < radius || char_pos.y > height - radius)
-    
-    if (key == GLFW_KEY_D || key == GLFW_KEY_RIGHT)
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        right_pressed = true;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        left_pressed = true;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        up_pressed = true;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        down_pressed = true;
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_RELEASE)
+        right_pressed = false;
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_RELEASE)
+        left_pressed = false;
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_RELEASE)
+        up_pressed = false;
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_RELEASE)
+        down_pressed = false;
+
+    if (!started && !left_pressed && !right_pressed && !up_pressed && !down_pressed)
+        ready_to_start = true;
+
+    if (ready_to_start && (left_pressed || right_pressed || up_pressed || down_pressed))
     {
-        if (char_pos.x < 765 || char_pos.x > width - radius)
-        {
-            char_pos.x += 5.0;
-        }
+        started = true;
+        ready_to_start = false;
     }
-    if (key == GLFW_KEY_A || key == GLFW_KEY_LEFT)
+}
+
+void Game::resize(GLFWwindow* window, const int w, const int h)
+{
+    width = w;
+    height = h;
+    resized = true;
+
+    glViewport(0, 0, width, height);
+}
+
+void Game::run()
+{
+    clock_t start = 0;
+    int id_enemy = 0;
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    create_scene();
+
+    while (!glfwWindowShouldClose(window_))
     {
-        if (char_pos.x > radius)
+        glfwPollEvents();
+
+        if (started)
         {
-            char_pos.x -= 5.0;
+            if (game_over)
+                break;
+
+            if ((clock() - start) / (CLOCKS_PER_SEC / 4) > 3 && id_enemy < 194)
+            {
+                id_enemy++;
+                start = clock();
+                create_enemy(id_enemy);
+            }
+
+            update_character();
+            update_enemies();
+            check_conflict();
         }
+
+        render();
+
+        glfwSwapBuffers(window_);
     }
-    if (key == GLFW_KEY_W || key == GLFW_KEY_UP)
-    {
-        if (char_pos.y < 580 || char_pos.y > height - radius)
+
+    if (started && game_over)
+        reset();
+}
+
+void Game::create_scene()
+{
+    create_background();
+    create_character();
+}
+
+void Game::create_background()
+{
+    auto* sprite = new Sprite;
+    const unsigned int tex_id = load_texture("Textures/Background/city.png");
+
+    sprite->set_texture(tex_id);
+    sprite->set_translation(glm::vec3(width / 2, height / 2, 0.0));
+    sprite->set_scale(glm::vec3(width * 1.25, height * 1.25, 1.0f));
+    sprite->set_shader(shader_);
+    objects_.push_back(sprite);
+
+    background_ = new Character(sprite, width / 2, height / 2, 0.05f);
+}
+
+void Game::create_character()
+{
+    auto* sprite = new Sprite;
+    const int tex_id = load_texture("Textures/Cars/117.png");
+    sprite->set_texture(tex_id);
+    sprite->set_translation(glm::vec3(width / 2, height / 2, 0));
+    sprite->set_scale(glm::vec3(height_car, width_car, 1.0));
+    sprite->set_shader(shader_);
+    objects_.push_back(sprite);
+
+    character_ = new Character(sprite, width / 2, height / 2, 0.5f);
+}
+
+void Game::create_enemy(int id)
+{
+    constexpr float x_initial = height_car;
+    const float y_initial = rand() % static_cast<int>(height) - width_car / 2;
+
+    auto* sprite = new Sprite;
+    const int tex_id = load_texture("Textures/Cars/" + std::to_string(id) + ".png");
+    sprite->set_texture(tex_id);
+    sprite->set_translation(glm::vec3(x_initial, y_initial, 0));
+    sprite->set_scale(glm::vec3(height_car, width_car, 1.0));
+    sprite->set_shader(shader_);
+    objects_.push_back(sprite);
+    const float speed = 0.05f * id;
+
+    auto* enemy = new Enemy(sprite, x_initial, y_initial, speed, speed, id);
+    enemies_.push_back(enemy);
+}
+
+void Game::update_character() const
+{
+    if (left_pressed)
+        if (character_->x > height_car / 2)
         {
-            char_pos.y += 5.0;
+            character_->move_left();
+            background_->move_right();
         }
-    }
-    if (key == GLFW_KEY_S || key == GLFW_KEY_DOWN)
-    {
-        if (char_pos.y > radius - 20)
+
+    if (right_pressed)
+        if (character_->x < width_default - height_car / 2)
         {
-            char_pos.y -= 5.0;
+            character_->move_right();
+            background_->move_left();
+        }
+
+    if (up_pressed)
+        if (character_->y < height_default - width_car / 2)
+        {
+            character_->move_up();
+            background_->move_down();
+        }
+
+    if (down_pressed)
+        if (character_->y > width_car / 2)
+        {
+            character_->move_down();
+            background_->move_up();
+        }
+};
+
+void Game::update_enemies() const
+{
+    for (const auto enemy : enemies_)
+    {
+        if (enemy->x > width_default - width_car / 2 || enemy->x < width_car / 2)
+            enemy->set_speed_x(-enemy->speed_x);
+
+        if (enemy->y > height_default - width_car / 2 || enemy->y < width_car / 2)
+            enemy->set_speed_y(-enemy->speed_y);
+
+        enemy->move_x();
+        enemy->move_y();
+    }
+}
+
+void Game::check_conflict() const
+{
+    for (const auto enemy : enemies_)
+    {
+        const float enemy_left = enemy->x;
+        const float enemy_right = enemy->x + width_car * 2;
+        const float enemy_top = enemy->y;
+        const float enemy_bottom = enemy->y + height_car / 2;
+
+        const float character_left = character_->x;
+        const float character_right = character_->x + width_car * 2;
+        const float character_top = character_->y;
+        const float character_bottom = character_->y + height_car / 2;
+
+        if (character_right >= enemy_left
+            && character_left <= enemy_right
+            && character_bottom >= enemy_top
+            && character_top <= enemy_bottom)
+        {
+            game_over = true;
+            started = false;
+            ready_to_start = !left_pressed && !right_pressed && !up_pressed && !down_pressed;
         }
     }
 }
 
-/*int setup_geometry()
+void Game::render()
 {
-	
-	GLfloat vertices[] = {
-		//x   y     z    r    g    b     s     t
-		-0.5 , -0.5 , 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, //v0
-		 0.5 , -0.5 , 0.0, 0.0, 1.0, 0.0, 1.0, 0.0, //v1
-		 0.0 , 0.5 ,  0.0, 0.0, 0.0, 1.0, 0.5, 1.0  //v2
-	};
+    glClearColor(0.8f, 0.8f, 0.8f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	GLuint VBO, VAO;
+    if (resized)
+    {
+        setup_camera_2d();
+        resized = false;
+    }
 
-	//Geração do identificador do VBO
-	glGenBuffers(1, &VBO);
-	//Faz a conexão (vincula) do buffer como um buffer de array
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//Envia os dados do array de floats para o buffer da OpenGl
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	//Geração do identificador do VAO (Vertex Array Object)
-	glGenVertexArrays(1, &VAO);
-	// Vincula (bind) o VAO primeiro, e em seguida  conecta e seta o(s) buffer(s) de vértices
-	// e os ponteiros para os atributos 
-	glBindVertexArray(VAO);
-
-	//Atributo posição
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
-	glEnableVertexAttribArray(0);
-
-	//Atributo cor
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-
-	//Atributo coordenada de textura
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
-	
-	glBindBuffer(GL_ARRAY_BUFFER, 0); 
-	
-	glBindVertexArray(0); 
-
-	return VAO;
-}*/
-
-int setup_sprite()
-{
-    GLfloat vertices[] = {
-        //x   y     z    r    g    b     s     t
-        //T1
-        -0.5, 0.5, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0, //v0
-        -0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, //v1
-        0.5, 0.5, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, //v2
-        //T2
-        -0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, //v1
-        0.5, 0.5, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, //v2
-        0.5, -0.5, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0 //v3
-    };
-
-    GLuint VBO, VAO;
-
-    //Geração do identificador do VBO
-    glGenBuffers(1, &VBO);
-    //Faz a conexão (vincula) do buffer como um buffer de array
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    //Envia os dados do array de floats para o buffer da OpenGl
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-    //Geração do identificador do VAO (Vertex Array Object)
-    glGenVertexArrays(1, &VAO);
-    // Vincula (bind) o VAO primeiro, e em seguida  conecta e seta o(s) buffer(s) de vértices
-    // e os ponteiros para os atributos 
-    glBindVertexArray(VAO);
-
-    //Atributo posição
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
-    glEnableVertexAttribArray(0);
-
-    //Atributo cor
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
-
-    //Atributo coordenada de textura
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(2);
-
-    // Observe que isso é permitido, a chamada para glVertexAttribPointer registrou o VBO como o objeto de buffer de vértice 
-    // atualmente vinculado - para que depois possamos desvincular com segurança
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    // Desvincula o VAO (é uma boa prática desvincular qualquer buffer ou array para evitar bugs medonhos)
-    glBindVertexArray(0);
-
-    return VAO;
+    for (const auto& object : objects_)
+    {
+        object->update();
+        object->draw();
+    }
 }
 
-GLuint generate_texture(string file_path, int& width, int& height)
+void Game::reset()
 {
-    GLuint texID;
-    // Gera o identificador da textura na memória 
-    glGenTextures(1, &texID);
-    glBindTexture(GL_TEXTURE_2D, texID);
+    game_over = false;
+    objects_.clear();
+    enemies_.clear();
+    run();
+}
 
-    //Definindo o método de wrapping e de filtering
+int Game::load_texture(const string& path)
+{
+    GLuint tex_id;
+
+    // Gera o identificador da textura na mem�ria 
+    glGenTextures(1, &tex_id);
+    glBindTexture(GL_TEXTURE_2D, tex_id);
+
+    //Ajusta os parametros de wrapping e filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    //Carregando a imagen da textura
-    int nrChannels;
-    unsigned char* data = stbi_load(file_path.c_str(), &width, &height, &nrChannels, 0);
+    //Carregamento da imagem
+    int width, height, nr_channels;
+    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nr_channels, 0);
 
-    //Manda para OpenGL armazenar a textura e gerar o mipmap
     if (data)
     {
-        if (nrChannels == 3) //jpg, bmp
+        if (nr_channels == 3) //jpg, bmp
         {
             glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
         }
@@ -294,22 +311,15 @@ GLuint generate_texture(string file_path, int& width, int& height)
     }
 
     stbi_image_free(data);
+
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return texID;
+    return tex_id;
 }
 
-void configure_drawing(Shader shader, int width, int height, GLuint tex_id, glm::mat4& model, GLint& model_loc,
-                       glm::vec3 char_pos)
+void Game::setup_camera_2d()
 {
-    model = glm::mat4(1);
-
-    model = translate(model, char_pos);
-    model = scale(model, glm::vec3(width, height, 1.0));
-    model_loc = glGetUniformLocation(shader.ID, "model");
-    glUniformMatrix4fv(model_loc, 1, FALSE, value_ptr(model));
-
-    // Chamada de desenho do background
-    glBindTexture(GL_TEXTURE_2D, tex_id);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
+    projection_ = glm::ortho(0.0f, width_default, 0.0f, height_default, -1.0f, 1.0f);
+    const GLint proj_loc = glGetUniformLocation(shader_->id, "projection");
+    glUniformMatrix4fv(proj_loc, 1, GL_FALSE, value_ptr(projection_));
 }

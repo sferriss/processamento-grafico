@@ -116,19 +116,28 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\dependencies\stb_image\stb_image.cpp" />
-    <ClCompile Include="../../commonfiles/glad.c" />
     <ClCompile Include="../../commonfiles/Shader.cpp" />
+    <ClCompile Include="Character.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="glad.c" />
+    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Sprite.cpp" />
+    <ClCompile Include="stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\dependencies\stb_image\stb_image.h" />
     <ClInclude Include="../../commonfiles/Shader.h" />
+    <ClInclude Include="Interfaces\Character.h" />
+    <ClInclude Include="Interfaces\Enemy.h" />
+    <ClInclude Include="Interfaces\Game.h" />
+    <ClInclude Include="Interfaces\Sprite.h" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Shaders\Game.fs" />
+    <Compile Include="Shaders\sprite.fs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Shaders\Game.vs" />
+    <Content Include="Shaders\sprite.vs" />
     <Content Include="Textures\Background\city.png" />
     <Content Include="Textures\Cars\1.png" />
     <Content Include="Textures\Cars\10.png" />
@@ -324,8 +333,6 @@
     <Content Include="Textures\Cars\97.png" />
     <Content Include="Textures\Cars\98.png" />
     <Content Include="Textures\Cars\99.png" />
-    <Content Include="Textures\Characters\rogue.png" />
-    <Content Include="Textures\Characters\walk1.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
