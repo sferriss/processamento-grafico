@@ -35,6 +35,8 @@ Para jogar novamente pressione uma tecla de movimento (W, S, A, D)
 
 - Faça clone do projeto;
 - Importe o projeto para a IDE de sua preferencia;
+- Selecione a versão x32 para compilar o projeto
 - Defina a versão da PlatformToolset de acordo com a versão do seu computador (o projeto está configurado para rodar na 143)
 
 ![Versao](Prints/versao.png)
+Obs: As demais dependências já estão configuradas
