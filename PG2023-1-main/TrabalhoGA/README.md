@@ -14,19 +14,19 @@ O projeto é um joguinho de fuga de carros, onde o objetivo é não deixar os ou
 
 Para iniciar o jogo pressione uma tecla de movimento (W, S, A, D)
 
-![StartGame](prints/start.png)
+![StartGame](Prints/start.png)
 
 
 ### Simulação do Jogo
 
-![Simulacao](prints/simulacao.png)
+![Simulacao](Prints/simulacao.png)
 
 
 ### Game Over
 
 Para jogar novamente pressione uma tecla de movimento (W, S, A, D)
 
-![EndGame](prints/gameover.png)
+![EndGame](Prints/gameover.png)
 
 
 ------------------------------------------------------------------------------------------------------------------
@@ -37,4 +37,4 @@ Para jogar novamente pressione uma tecla de movimento (W, S, A, D)
 - Importe o projeto para a IDE de sua preferencia;
 - Defina a versão da PlatformToolset de acordo com a versão do seu computador (o projeto está configurado para rodar na 143)
 
-![Versao](prints/versao.png)
+![Versao](Prints/versao.png)
