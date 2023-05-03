@@ -27,7 +27,10 @@ public:
     void create_background();
     void update_character() const;
     void update_enemies() const;
-    void check_conflict() const;
+    static void detect_and_handle_edge_collision(Enemy* enemy);
+    void check_collision() const;
+    static bool is_collision(const Character* character, const Enemy* enemy);
+    static void end_game();
     void render();
     void reset();
 

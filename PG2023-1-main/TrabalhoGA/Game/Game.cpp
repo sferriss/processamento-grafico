@@ -113,7 +113,7 @@ void Game::run()
 
             update_character();
             update_enemies();
-            check_conflict();
+            check_collision();
         }
 
         render();
@@ -178,75 +178,91 @@ void Game::create_enemy(int id)
 
 void Game::update_character() const
 {
-    if (left_pressed)
-        if (character_->x > height_car / 2)
-        {
-            character_->move_left();
-            background_->move_right();
-        }
+    if (left_pressed && character_->x > height_car / 2)
+    {
+        character_->move_left();
+        background_->move_right();
+    }
 
-    if (right_pressed)
-        if (character_->x < width_default - height_car / 2)
-        {
-            character_->move_right();
-            background_->move_left();
-        }
+    if (right_pressed && character_->x < width_default - height_car / 2)
+    {
+        character_->move_right();
+        background_->move_left();
+    }
 
-    if (up_pressed)
-        if (character_->y < height_default - width_car / 2)
-        {
-            character_->move_up();
-            background_->move_down();
-        }
+    if (up_pressed && character_->y < height_default - width_car / 2)
+    {
+        character_->move_up();
+        background_->move_down();
+    }
 
-    if (down_pressed)
-        if (character_->y > width_car / 2)
-        {
-            character_->move_down();
-            background_->move_up();
-        }
-};
+    if (down_pressed && character_->y > width_car / 2)
+    {
+        character_->move_down();
+        background_->move_up();
+    }
+}
 
 void Game::update_enemies() const
 {
     for (const auto enemy : enemies_)
     {
-        if (enemy->x > width_default - width_car / 2 || enemy->x < width_car / 2)
-            enemy->set_speed_x(-enemy->speed_x);
-
-        if (enemy->y > height_default - width_car / 2 || enemy->y < width_car / 2)
-            enemy->set_speed_y(-enemy->speed_y);
+        detect_and_handle_edge_collision(enemy);
 
         enemy->move_x();
         enemy->move_y();
     }
 }
 
-void Game::check_conflict() const
+void Game::detect_and_handle_edge_collision(Enemy* enemy)
+{
+    if (enemy->x > width_default - width_car / 2 || enemy->x < width_car / 2)
+    {
+        enemy->set_speed_x(-enemy->speed_x);
+    }
+    if (enemy->y > height_default - width_car / 2 || enemy->y < width_car / 2)
+    {
+        enemy->set_speed_y(-enemy->speed_y);
+    }
+}
+
+void Game::check_collision() const
 {
     for (const auto enemy : enemies_)
     {
-        const float enemy_left = enemy->x;
-        const float enemy_right = enemy->x + width_car * 2;
-        const float enemy_top = enemy->y;
-        const float enemy_bottom = enemy->y + height_car / 2;
-
-        const float character_left = character_->x;
-        const float character_right = character_->x + width_car * 2;
-        const float character_top = character_->y;
-        const float character_bottom = character_->y + height_car / 2;
-
-        if (character_right >= enemy_left
-            && character_left <= enemy_right
-            && character_bottom >= enemy_top
-            && character_top <= enemy_bottom)
+        if (is_collision(character_, enemy))
         {
-            game_over = true;
-            started = false;
-            ready_to_start = !left_pressed && !right_pressed && !up_pressed && !down_pressed;
+            end_game();
+            break;
         }
     }
 }
+
+bool Game::is_collision(const Character* character, const Enemy* enemy)
+{
+    const float enemy_left = enemy->x;
+    const float enemy_right = enemy->x + width_car * 2;
+    const float enemy_top = enemy->y;
+    const float enemy_bottom = enemy->y + height_car / 2;
+
+    const float character_left = character->x;
+    const float character_right = character->x + width_car * 2;
+    const float character_top = character->y;
+    const float character_bottom = character->y + height_car / 2;
+
+    return (character_right >= enemy_left
+        && character_left <= enemy_right
+        && character_bottom >= enemy_top
+        && character_top <= enemy_bottom);
+}
+
+void Game::end_game()
+{
+    game_over = true;
+    started = false;
+    ready_to_start = !left_pressed && !right_pressed && !up_pressed && !down_pressed;
+}
+
 
 void Game::render()
 {

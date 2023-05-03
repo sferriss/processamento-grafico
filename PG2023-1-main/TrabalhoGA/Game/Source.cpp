@@ -6,4 +6,4 @@ int main() {
   const auto game =  new Game;
   game->start();
   game->run();
-};
+}
