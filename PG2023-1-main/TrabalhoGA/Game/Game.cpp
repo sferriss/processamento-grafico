@@ -104,7 +104,7 @@ void Game::run()
             if (game_over)
                 break;
 
-            if ((clock() - start) / (CLOCKS_PER_SEC / 4) > 3 && id_enemy < 194)
+            if (clock() - start >= CLOCKS_PER_SEC && id_enemy < 194)
             {
                 id_enemy++;
                 start = clock();
