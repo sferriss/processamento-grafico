@@ -1,6 +1,8 @@
 #include "Interfaces/Game.h"
 
-#include "stb_image.h"
+#include <random>
+
+#include "Interfaces/Texture.h"
 
 static constexpr float width_default = 1300.0f, height_default = 900.0f, height_car = 90.0f, width_car = 45.0f;
 static float width = width_default, height = height_default;
@@ -34,7 +36,7 @@ void Game::initialize_graphics()
     cout << "Renderer: " << renderer << endl;
     cout << "OpenGL version supported " << version << endl;
 
-    add_shader("Shaders/sprite.vs", "Shaders/sprite.fs");
+    add_shader("Shaders/game.vs", "Shaders/game.fs");
 
     resized = true;
 }
@@ -142,20 +144,21 @@ void Game::create_background()
     sprite->set_shader(shader_);
     objects_.push_back(sprite);
 
-    background_ = new Character(sprite, width / 2, height / 2, 0.05f);
+    background_ = new Character(sprite, width / 2, height / 2, 0.02f);
 }
 
 void Game::create_character()
 {
+    const int id_texture = random_value(1, 194);
     auto* sprite = new Sprite;
-    const int tex_id = load_texture("Textures/Cars/117.png");
+    const int tex_id = load_texture("Textures/Cars/" + std::to_string(id_texture) + ".png");
     sprite->set_texture(tex_id);
     sprite->set_translation(glm::vec3(width / 2, height / 2, 0));
     sprite->set_scale(glm::vec3(height_car, width_car, 1.0));
     sprite->set_shader(shader_);
     objects_.push_back(sprite);
 
-    character_ = new Character(sprite, width / 2, height / 2, 0.5f);
+    character_ = new Character(sprite, width / 2, height / 2, 0.2f);
 }
 
 void Game::create_enemy(int id)
@@ -170,7 +173,7 @@ void Game::create_enemy(int id)
     sprite->set_scale(glm::vec3(height_car, width_car, 1.0));
     sprite->set_shader(shader_);
     objects_.push_back(sprite);
-    const float speed = 0.05f * id;
+    const float speed = 0.02f * id;
 
     auto* enemy = new Enemy(sprite, x_initial, y_initial, speed, speed, id);
     enemies_.push_back(enemy);
@@ -292,45 +295,7 @@ void Game::reset()
 
 int Game::load_texture(const string& path)
 {
-    GLuint tex_id;
-
-    // Gera o identificador da textura na mem�ria 
-    glGenTextures(1, &tex_id);
-    glBindTexture(GL_TEXTURE_2D, tex_id);
-
-    //Ajusta os parametros de wrapping e filtering
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    //Carregamento da imagem
-    int width, height, nr_channels;
-    unsigned char* data = stbi_load(path.c_str(), &width, &height, &nr_channels, 0);
-
-    if (data)
-    {
-        if (nr_channels == 3) //jpg, bmp
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-        }
-        else //png
-        {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-        }
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    else
-    {
-        std::cout << "Failed to load texture" << std::endl;
-    }
-
-    stbi_image_free(data);
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    return tex_id;
+    return Texture().load(path);
 }
 
 void Game::setup_camera_2d()
@@ -338,4 +303,12 @@ void Game::setup_camera_2d()
     projection_ = glm::ortho(0.0f, width_default, 0.0f, height_default, -1.0f, 1.0f);
     const GLint proj_loc = glGetUniformLocation(shader_->id, "projection");
     glUniformMatrix4fv(proj_loc, 1, GL_FALSE, value_ptr(projection_));
+}
+
+int Game::random_value(const int min, const int max)
+{
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_int_distribution<> dis(min, max);
+    return dis(gen);
 }

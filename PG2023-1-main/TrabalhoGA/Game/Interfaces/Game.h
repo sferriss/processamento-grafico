@@ -41,6 +41,7 @@ private:
     static void resize(GLFWwindow* window, int width, int height);
     void initialize_graphics();
     void setup_camera_2d();
+    static int random_value(int min, int max);
     void add_shader(const string& v_filename, const string& f_filename);
     void create_character();
     void create_enemy(int id);
@@ -51,6 +52,6 @@ private:
 
     vector<Sprite*> objects_;
     Character* character_{};
-    Character* background_;
+    Character* background_{};
     vector<Enemy*> enemies_;
 };

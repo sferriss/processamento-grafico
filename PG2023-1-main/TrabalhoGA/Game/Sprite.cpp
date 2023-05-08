@@ -1,4 +1,4 @@
-#include "Interfaces//Sprite.h"
+#include "Interfaces/Sprite.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 
