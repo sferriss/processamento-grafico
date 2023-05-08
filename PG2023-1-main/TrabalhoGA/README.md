@@ -4,6 +4,8 @@ Projeto de um game, destinado para realização do trabalho da disciplina de Pro
 
 O projeto é um joguinho de fuga de carros, onde o objetivo é não deixar os outros carros baterem no teu.
 
+Aluno: Sandro Ferri
+
 ### Recursos utilizados
 
 - C++
