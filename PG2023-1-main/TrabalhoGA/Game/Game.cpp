@@ -219,7 +219,7 @@ void Game::update_enemies() const
 
 void Game::detect_and_handle_edge_collision(Enemy* enemy)
 {
-    if (enemy->x > width_default - width_car / 2 || enemy->x < width_car / 2)
+    if (enemy->x > width_default - height_car / 2 || enemy->x < height_car / 2)
     {
         enemy->set_speed_x(-enemy->speed_x);
     }
