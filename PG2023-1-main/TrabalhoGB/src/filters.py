@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from scipy.interpolate import UnivariateSpline
+
 
 class Filter:
     @staticmethod
@@ -92,3 +92,43 @@ class Filter:
         increased_contrast = cv2.convertScaleAbs(summer_img, alpha=1.2, beta=10)
 
         return increased_contrast
+
+    @staticmethod
+    def sobel(image):
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        sobelx = cv2.Sobel(gray, cv2.CV_64F, 1, 0, ksize=5)  # Sobel x
+        sobely = cv2.Sobel(gray, cv2.CV_64F, 0, 1, ksize=5)  # Sobel y
+
+        combined = cv2.magnitude(sobelx, sobely)
+
+        normalized = cv2.normalize(combined, None, 0, 255, cv2.NORM_MINMAX, dtype=cv2.CV_8U)
+
+        return normalized
+
+    @staticmethod
+    def red(image):
+        red_image = image.copy()
+
+        red_image[:, :, 0] = 0
+        red_image[:, :, 1] = 0
+
+        return red_image
+
+    @staticmethod
+    def green(image):
+        green_image = image.copy()
+
+        green_image[:, :, 0] = 0
+        green_image[:, :, 2] = 0
+
+        return green_image
+
+    @staticmethod
+    def blue(image):
+        blue_image = image.copy()
+
+        blue_image[:, :, 1] = 0
+        blue_image[:, :, 2] = 0
+
+        return blue_image

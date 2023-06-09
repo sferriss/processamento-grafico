@@ -5,6 +5,35 @@ from tkinter import filedialog
 import numpy as np
 
 from src.filters import Filter
+from src.sticker import Sticker
+
+
+def overlay_sticker(image, sticker, x, y):
+    # Verifique se o sticker tem um canal alfa (transparência)
+    if sticker.shape[2] < 4:
+        # Se não tiver, adicione um
+        sticker = cv2.cvtColor(sticker, cv2.COLOR_BGR2BGRA)
+
+    # Redimensione o sticker para um tamanho menor
+    sticker = cv2.resize(sticker, (110, 110))
+
+    # Verifique se a imagem tem três canais (cor)
+    if len(image.shape) < 3 or image.shape[2] < 3:
+        # Se não tiver, converta para colorida
+        image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
+
+    # Defina a região de interesse na imagem de entrada para o tamanho do sticker
+    roi = image[y:y + sticker.shape[0], x:x + sticker.shape[1]]
+
+    # Crie uma máscara usando o canal alfa do sticker e inverta
+    mask = sticker[..., 3] / 255.0
+    inverse_mask = 1 - mask
+
+    # Usando a máscara e a máscara inversa, combine o sticker e a região de interesse (ROI)
+    for c in range(0, 3):
+        roi[..., c] = (mask * sticker[..., c] + inverse_mask * roi[..., c]).astype(np.uint8)
+
+    return image
 
 
 class Application:
@@ -17,6 +46,7 @@ class Application:
         self.filters = Filter()
         self.active_filters = {}
         self.stickers = []
+        self.sticker = None
 
         self.btn_open_webcam = tk.Button(window, text="Open Webcam", width=25, command=self.open_webcam)
         self.btn_open_webcam.grid(column=0, row=0)
@@ -24,25 +54,36 @@ class Application:
         self.btn_open_image = tk.Button(window, text="Open Image", width=25, command=self.open_image)
         self.btn_open_image.grid(column=1, row=0)
 
-        # self.btn_add_sticker = tk.Button(window, text="Add Sticker", width=25, command=self.add_sticker)
-        # self.btn_add_sticker.grid(column=1, row=1)
+        self.btn_add_sticker = tk.Button(window, text="Add Sticker", width=52, command=self.add_sticker)
+        self.btn_add_sticker.grid(column=0, row=1, columnspan=2)
 
-        row = 1
+        self.btn_clear = tk.Button(window, text="Clear", width=52, command=self.clear_all)
+        self.btn_clear.grid(column=0, row=2, columnspan=2)
+
+        filter_methods = [method for method in dir(Filter) if not method.startswith("__")]
+        total_methods = len(filter_methods)
+
+        row = 3
         column = 0
-        for filter_name in dir(Filter):
-            if not filter_name.startswith("__"):
-                btn_filter = tk.Button(window, text=f"Apply {filter_name.capitalize()} Filter", width=25,
-                                       command=lambda name=filter_name: self.toggle_filter(name))
-                btn_filter.grid(row=row, column=column)
 
-                # btn_remove_filter = tk.Button(window, text=f"Sticker {filter_name.capitalize()}", width=25,
-                #                               command=lambda name=filter_name: self.toggle_filter(name))
-                # btn_remove_filter.grid(row=row, column=column + 1)
+        for i, filter_name in enumerate(filter_methods):
+            btn_filter = tk.Button(window, text=f"Apply {filter_name.capitalize()} Filter", width=25,
+                                   command=lambda name=filter_name: self.toggle_filter(name))
+            btn_filter.grid(row=row, column=column)
 
-                column += 2
-                if column > 1:
-                    column = 0
-                    row += 1
+            if i == total_methods // 2:
+                column = 1
+                row = 2
+            row += 1
+
+    def mouse_click(self, event, x, y, flags, param):
+        # Verifica se o botão esquerdo do mouse foi clicado
+        if event == cv2.EVENT_LBUTTONDOWN and self.sticker is not None:
+            sticker = Sticker(x, y, self.sticker)
+            self.stickers.append(sticker)
+            self.sticker = None
+            if not self.is_video:
+                self.update_frame()
 
     def toggle_filter(self, filter_name):
         if filter_name in self.active_filters:
@@ -58,16 +99,34 @@ class Application:
         self.update_webcam_button()
         self.window.after(100, self.update_frame)
 
+        self.clear_stickers()
+        self.clear_filters()
+
     def open_image(self):
         filepath = filedialog.askopenfilename(filetypes=[("Images", "*.jpg;*.jpeg;*.png")])
         if filepath:
             self.frame = cv2.imread(filepath)
-            if len(self.stickers) > 0:
-                self.stickers = []
+            self.clear_stickers()
+            self.clear_filters()
+
             if self.is_video:
                 self.is_video = False
                 self.update_webcam_button()
                 self.capture.release()
+            self.update_frame()
+
+    def clear_stickers(self):
+        if len(self.stickers) > 0:
+            self.stickers = []
+
+    def clear_filters(self):
+        self.active_filters.clear()
+
+    def clear_all(self):
+        self.clear_filters()
+        self.clear_stickers()
+
+        if not self.is_video:
             self.update_frame()
 
     def update_webcam_button(self):
@@ -76,46 +135,11 @@ class Application:
         else:
             self.btn_open_webcam.configure(state="normal")
 
-    def overlay_sticker(self, frame, sticker_img, x, y, max_width=100):
-
-        sticker_h, sticker_w, _ = sticker_img.shape
-        roi = frame[y:y + sticker_h, x:x + sticker_w]
-
-        # Verifica se o sticker é maior do que a região de interesse
-        if sticker_h > roi.shape[0] or sticker_w > roi.shape[1]:
-            # Redimensiona o sticker para as dimensões da região de interesse
-            sticker_img = cv2.resize(sticker_img, (roi.shape[1], roi.shape[0]))
-
-        if sticker_img.shape[2] == 4:  # Verifica se o sticker possui um canal alfa
-            alpha = sticker_img[:, :, 3] / 255.0  # Canal alfa do sticker
-            sticker = sticker_img[:, :, :3]  # Componentes de cor do sticker
-        else:
-            alpha = np.ones((roi.shape[0], roi.shape[1]))  # Transparência total
-            sticker = sticker_img
-
-        # Redimensiona o sticker proporcionalmente para uma largura máxima desejada
-        scale_factor = max_width / sticker.shape[1]
-        sticker = cv2.resize(sticker, (max_width, int(sticker.shape[0] * scale_factor)))
-
-        # Redimensiona o canal alfa para as mesmas dimensões do sticker, se necessário
-        if alpha.shape[:2] != sticker.shape[:2]:
-            alpha = cv2.resize(alpha, (sticker.shape[1], sticker.shape[0]))
-
-        # Redimensiona a região de interesse para ter o mesmo tamanho do sticker
-        roi = cv2.resize(roi, (sticker.shape[1], sticker.shape[0]))
-
-        # Realiza a combinação das imagens levando em consideração o canal alfa
-        result = np.zeros_like(roi)
-        result[:, :, :3] = (1 - alpha[:, :, np.newaxis]) * roi[:, :, :3] + alpha[:, :, np.newaxis] * sticker
-
-        # Atualiza a região de interesse com o sticker sobreposto
-        frame[y:y + sticker.shape[0], x:x + sticker.shape[1]] = result.astype(np.uint8)
-
     def add_sticker(self):
         filepath = filedialog.askopenfilename(filetypes=[("Images", "*.png")])
         if filepath:
-            sticker = cv2.imread(filepath, cv2.IMREAD_UNCHANGED)
-            self.stickers.append(sticker)
+            self.sticker = cv2.imread(filepath, cv2.IMREAD_UNCHANGED)
+            cv2.setMouseCallback("Image", self.mouse_click)
 
     def update_frame(self):
         if self.is_video:
@@ -123,9 +147,8 @@ class Application:
         else:
             frame = self.frame.copy()
 
-        # for sticker in self.stickers:
-        #     x, y = 2, 2  # Exemplo: coordenadas onde o sticker será colocado
-        #     self.overlay_sticker(frame, sticker, x, y)
+        for sticker in self.stickers:
+            overlay_sticker(frame, sticker.image, sticker.x, sticker.y)
 
         for filter_name, active in self.active_filters.items():
             if active and hasattr(self.filters, filter_name):
@@ -138,6 +161,8 @@ class Application:
             self.window.after(100, self.update_frame)
 
     def show_image(self, frame):
+        cv2.namedWindow("Image")
+
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         cv2.imshow("Image", frame)
         cv2.waitKey(1)
