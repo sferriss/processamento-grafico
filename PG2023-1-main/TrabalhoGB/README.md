@@ -2,7 +2,7 @@
 
 Projeto de uma aplicação, destinado para realização do trabalho da disciplina de Processamento Gráfico.
 
-O projeto é uma aplicação que aplica filtros e stickers em imagens carregadas ou no video direto da webcam.
+O projeto é um aplicativo que aplica filtros e stickers em imagens carregadas ou no video direto da webcam.
 
 Aluno: Sandro Ferri
 
